@@ -1,0 +1,7 @@
+# dependencies
+/node_modules
+
+#envirounment variable
+.env
+
+hot-onion-by-mahbub-firebase-adminsdk-2kp9t-6a8372e39c.json
