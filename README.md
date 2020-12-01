@@ -16,6 +16,7 @@
    * Users can pay with stripe or cash on delivery.
    * Users can see all his order history, current order, and order detail from his dashboard.
    * Users can give us a real-time review which will show on the home page.
+   * Device friendly and responsive
    * Secured Backend API with users jwt token.
 
 
