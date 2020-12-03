@@ -54,7 +54,7 @@ const handleToken = bearer => {
     const tokenEmail = handleToken(bearer);
       tokenEmail.then(decodeEmail => {
         if(decodeEmail === queryEmail){
-          adminCollection.find({email: queryEmail})
+          adminCollection.find({adminEmail: queryEmail})
           .toArray((err, result) => {
             if(result.length){
               ordersCollection.find()
@@ -77,7 +77,7 @@ const handleToken = bearer => {
     const tokenEmail = handleToken(bearer);
     tokenEmail.then(decodeEmail => {
         if(decodeEmail){
-          adminCollection.find({email: decodeEmail})
+          adminCollection.find({adminEmail: decodeEmail})
           .toArray((err, result) => {
             if(result.length){
               ordersCollection.updateOne({_id: ObjectID(req.params.id)},
@@ -154,25 +154,17 @@ const handleToken = bearer => {
   });
 
     app.post('/add_food', (req, res) =>{
-      adminCollection.find({email: req.query.check_admin})
+      adminCollection.find({adminEmail: req.query.check_admin})
       .toArray((err, results) => {
         if(results.length){
-            const file = req.files.file;
+            const image_link = req.body.image_link;
             const name = req.body.name;
             const title = req.body.title;
             const category = req.body.category;
             const description = req.body.description;
             const price = req.body.price;
-            const newImg = file.data;
-            const encImg = newImg.toString('base64');
             
-            const image = {
-              contentType: file.mimetype,
-              size: file.size,
-              img: Buffer.from(encImg, 'base64')
-            };
-
-            allFoodCollection.insertOne({name, title, category, description, price, image})
+            allFoodCollection.insertOne({name, title, category, description, price, image_link})
             .then(documents =>{
                 res.send(documents.insertedCount > 0);
             });
@@ -213,7 +205,7 @@ const handleToken = bearer => {
       const tokenEmail = handleToken(bearer);
         tokenEmail.then(decodeEmail => {
           if(decodeEmail === queryEmail){
-            adminCollection.find({email: decodeEmail})
+            adminCollection.find({adminEmail: decodeEmail})
             .toArray((err, results) => {
               if(results.length){
                 adminCollection.insertOne(req.body)
@@ -230,7 +222,7 @@ const handleToken = bearer => {
     });
 
     app.get('/isAdmin', (req, res) =>{
-      adminCollection.find({email: req.query.email})
+      adminCollection.find({adminEmail: req.query.email})
       .toArray((err, result) => {
         if(result){
           res.send(result.length > 0);
