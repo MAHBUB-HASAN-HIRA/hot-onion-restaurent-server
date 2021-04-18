@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -5,7 +6,8 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const fileUpload = require('express-fileupload');
 const admin = require('firebase-admin');
-require('dotenv').config();
+const imgbbUploader = require("imgbb-uploader");
+const fs = require('fs')
 
 
 const app = express();
@@ -157,17 +159,28 @@ const handleToken = bearer => {
       adminCollection.find({adminEmail: req.query.check_admin})
       .toArray((err, results) => {
         if(results.length){
-            const image_link = req.body.image_link;
+            const img_link = req.files.file;
             const name = req.body.name;
             const title = req.body.title;
             const category = req.body.category;
             const description = req.body.description;
             const price = req.body.price;
             
-            allFoodCollection.insertOne({name, title, category, description, price, image_link})
-            .then(documents =>{
-                res.send(documents.insertedCount > 0);
-            });
+            const date = new Date();
+            const imagePath = await `${__dirname}/image/${ String(date.getUTCMilliseconds()) + "_"  + Math.ceil(123454 * Math.random()) + "_"  + img_link.name }`
+            img_link.mv(imagePath);
+
+            
+            imgbbUploader( process.env.IMGBB_API_KEY, imagePath)
+            .then((response) => {
+                const image_link = response.url;    
+                allFoodCollection.insertOne({name, title, category, description, price, image_link})
+                .then(documents =>{
+                    fs.unlink(imagePath, err => console.error(err));
+                    res.send(documents.insertedCount > 0);
+                });    
+            })
+            .catch((error) => console.error(error));
         };
       });
     });
