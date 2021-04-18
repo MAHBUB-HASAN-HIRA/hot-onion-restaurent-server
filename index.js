@@ -167,7 +167,7 @@ const handleToken = bearer => {
             const price = req.body.price;
             
             const date = new Date();
-            const imagePath = await `${__dirname}/image/${ String(date.getUTCMilliseconds()) + "_"  + Math.ceil(123454 * Math.random()) + "_"  + img_link.name }`
+            const imagePath = `${__dirname}/image/${ String(date.getUTCMilliseconds()) + "_"  + Math.ceil(123454 * Math.random()) + "_"  + img_link.name }`
             img_link.mv(imagePath);
 
             
